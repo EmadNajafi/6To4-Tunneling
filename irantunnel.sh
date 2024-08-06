@@ -30,8 +30,7 @@ if [[ -n "${khtmp}" ]]; then
     ipkharej=${khtmp}
 fi
 
-echo -e "\nIp Iran ro vared konid : "
-printf "Ip Pishfarz \e[33m${ipiran}\e[0m, Khali bezarid baraye estefade az ip zir! "
+printf "Ip Pishfarz \e[33m${ipiran}\e[0m"
 read irtmp
 if [[ -n "${irtmp}" ]]; then
     ipiran=${irtmp}
