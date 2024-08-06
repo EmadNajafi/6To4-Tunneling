@@ -28,7 +28,7 @@ if [[ -n "${irtmp}" ]]; then
 fi
 
 echo ""
-echo -e "\nIp kharej ro vared konid : "
+echo -e "\nIp Server kharej ro vared konid : "
 read khtmp
 if [[ -n "${khtmp}" ]]; then
     ipkharej=${khtmp}
