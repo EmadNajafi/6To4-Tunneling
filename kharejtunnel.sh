@@ -22,7 +22,7 @@ ipkharej=$(curl -s ipv4.icanhazip.com)
 
 
 
-printf "Ip Pishfarz : \e[33m${ipkharej}\e[0m "
+printf "Ip Server Kharej Shoma : \e[33m${ipkharej}\e[0m "
 read khtmp
 if [[ -n "${khtmp}" ]]; then
     ipkharej=${khtmp}
