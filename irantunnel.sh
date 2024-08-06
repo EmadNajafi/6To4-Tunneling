@@ -11,7 +11,7 @@ print() {
 
 clear
 echo ""
-print "6To4 Tunneling...!" 0.10
+print "6To4 / Gre6 Tunneling...!" 0.10
 echo ""
 
 sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
