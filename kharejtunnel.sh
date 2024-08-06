@@ -48,3 +48,8 @@ ip -6 tunnel add GRE6Tun_To_IR mode ip6gre remote fc00::1 local fc00::2
 ip addr add 192.168.13.2/30 dev GRE6Tun_To_IR
 ip link set GRE6Tun_To_IR mtu 1436
 ip link set GRE6Tun_To_IR up
+
+clear
+echo ""
+print "Done...!"
+echo ""
