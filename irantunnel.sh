@@ -24,7 +24,7 @@ ipiran=$(curl -s ipv4.icanhazip.com)
 
 
 
-printf "Ip Pishfarz \e[33m${ipiran}\e[0m"
+printf "Ip Pishfarz : \e[33m${ipiran}\e[0m"
 read irtmp
 if [[ -n "${irtmp}" ]]; then
     ipiran=${irtmp}
