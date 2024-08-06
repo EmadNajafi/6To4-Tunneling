@@ -14,9 +14,7 @@ clear
 echo ""
 print "Start Tunneling...!" 0.10
 echo ""
-echo ""
 print "Plaese Wait..." 0.10
-echo ""
 echo ""
 
 sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
