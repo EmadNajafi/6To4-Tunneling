@@ -27,7 +27,7 @@ if [[ -n "${khtmp}" ]]; then
 fi
 
 
-echo -e "\nIp Iran ro vared konid : "
+echo -e "\nIp Server Iran ro vared konid : "
 read irtmp
 if [[ -n "${irtmp}" ]]; then
     ipiran=${irtmp}
