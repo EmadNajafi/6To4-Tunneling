@@ -9,3 +9,6 @@ bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main
 تانل سرور خارج 
 
 bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/kharejtunnel.sh --ipv4)
+
+
+یادتون باشه بعد از هربار ریبوت شدن سرور ها تانل غیر فعال میشه و باید دوباره فعال کنید
