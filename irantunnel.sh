@@ -22,6 +22,7 @@ ipiran=$(curl -s ipv4.icanhazip.com)
 
 
 printf "Ip Server Iran Shoma : \e[33m${ipiran}\e[0m"
+echo "Baraye Taeid Enter Bznid..."
 read irtmp
 if [[ -n "${irtmp}" ]]; then
     ipiran=${irtmp}
