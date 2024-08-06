@@ -51,5 +51,5 @@ ip link set GRE6Tun_To_IR up
 
 clear
 echo ""
-print "Done...!"
+print "Done...!" 0.10
 echo ""
