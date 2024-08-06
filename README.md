@@ -6,7 +6,7 @@
 bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/irantunnel.sh)
 ```
 
-# تانل سرور خارج 
+# دستور تانل برای سرور خارج 
 ````
 bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/kharejtunnel.sh)
 ````
