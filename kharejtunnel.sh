@@ -1,5 +1,4 @@
 #!/bin/bash
-
 print() {
     text="$1"
     delay="$2"
