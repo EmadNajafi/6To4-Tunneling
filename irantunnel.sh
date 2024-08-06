@@ -24,17 +24,22 @@ po=$(cat /etc/ssh/sshd_config | grep "^Port")
 port=$(echo "$po" | sed "s/Port //g")
 ipiran=$(curl -s ipv4.icanhazip.com)
 
-echo -e "\nIp kharej ro vared konid : "
-read khtmp
-if [[ -n "${khtmp}" ]]; then
-    ipkharej=${khtmp}
-fi
+
 
 printf "Ip Pishfarz \e[33m${ipiran}\e[0m"
 read irtmp
 if [[ -n "${irtmp}" ]]; then
     ipiran=${irtmp}
 fi
+
+echo ""
+echo -e "\nIp kharej ro vared konid : "
+read khtmp
+if [[ -n "${khtmp}" ]]; then
+    ipkharej=${khtmp}
+fi
+
+
 
 ip tunnel add 6to4_To_KH mode sit remote $ipkharej local $ipiran
 ip -6 addr add fc00::1/64 dev 6to4_To_KH
@@ -47,8 +52,9 @@ ip link set GRE6Tun_To_KH mtu 1436
 ip link set GRE6Tun_To_KH up
 
 sysctl net.ipv4.ip_forward=1
-iptables -t nat -A PREROUTING -p tcp --dport $port -j DNAT --to-destination 192.168.13.1
+iptables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination 192.168.13.1
 iptables -t nat -A PREROUTING -j DNAT --to-destination 192.168.13.2
+iptables -t nat -A POSTROUTING -j MASQUERADE
 
 clear
 echo ""
