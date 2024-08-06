@@ -11,10 +11,10 @@ print() {
 }
 clear
 echo ""
-printshahan "Start Tunneling..." 0.10
+print "Start Tunneling..." 0.10
 echo ""
 echo ""
-printshahan "Please Wait . . ." 0.10
+print "Please Wait . . ." 0.10
 echo ""
 echo ""
 
