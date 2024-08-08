@@ -10,7 +10,7 @@ print() {
 }
 clear
 echo ""
-print "6To4 / Gre6 Tunneling...!" 0.10
+print "6To4 / Gre6 Tunneling...!" 0.20
 echo ""
 
 sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
@@ -51,5 +51,6 @@ ip link set GRE6Tun_To_IR up
 
 clear
 echo ""
-print "Done...!" 0.10
+print "Done...!" 0.20
 echo ""
+clear
