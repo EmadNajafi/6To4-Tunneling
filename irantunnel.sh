@@ -57,8 +57,9 @@ iptables -t nat -A POSTROUTING -j MASQUERADE
 
 clear
 echo ""
-print "Done...!" 0.10
+print "Done...!" 0.20
 echo ""
+clear
 
 
 
