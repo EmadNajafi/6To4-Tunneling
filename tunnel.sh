@@ -17,6 +17,7 @@ echo ""
 clear
 
 ##Main Menu##
+clear
 menu () { while true 
 do
 echo "Simple Script!"
@@ -58,5 +59,4 @@ shahan() {
 	bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/install.sh)
 }
 
-clear
 menu
