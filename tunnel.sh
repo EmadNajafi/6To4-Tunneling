@@ -14,6 +14,8 @@ echo ""
 print "Written By Emad Najafi" 0.10
 echo ""
 
+clear
+
 ##Main Menu##
 menu () { while true 
 do
