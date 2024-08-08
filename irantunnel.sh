@@ -35,6 +35,10 @@ if [[ -n "${khtmp}" ]]; then
 fi
 
 
+echo "net.ipv4.ip_forward = 1" | sudo tee /etc/sysctl.d/60-custom.conf
+echo "net.core.default_qdisc=fq" | sudo tee -a /etc/sysctl.d/60-custom.conf
+echo "net.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.d/60-custom.conf
+sudo sysctl -p /etc/sysctl.d/60-custom.conf
 
 ip tunnel add 6to4_To_KH mode sit remote $ipkharej local $ipiran
 ip -6 addr add fc00::1/64 dev 6to4_To_KH
