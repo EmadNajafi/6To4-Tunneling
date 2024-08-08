@@ -17,9 +17,9 @@ echo ""
 clear
 
 ##Main Menu##
-clear
 menu () { while true 
 do
+clear
 echo "Simple Script!"
 echo ""
 echo "1: Iran"
