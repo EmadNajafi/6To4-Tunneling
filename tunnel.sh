@@ -11,7 +11,7 @@ print() {
 
 clear
 echo ""
-print "Start Tunneling..." 0.10
+print "Writed By Emad Najafi" 0.10
 echo ""
 
 ##Update Server##
@@ -22,11 +22,14 @@ clear
 ##Main Menu##
 menu () { while true 
 do
+echo "Simple Script!"
+echo ""
 echo "1: Iran"
 echo "2: Kharej"
 echo "3: Install Sanaei x-ui"
 echo "4: Install ShaHan SSH Panel"
 echo "0: Exit"
+echo ""
 read -p "Please enter a number: " number
 case $number in
 	1) iran;;
