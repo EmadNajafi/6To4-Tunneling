@@ -11,7 +11,7 @@ print() {
 
 clear
 echo ""
-print "Written By Emad Najafi" 0.10
+print "Written By Emad Najafi" 0.20
 echo ""
 
 clear
