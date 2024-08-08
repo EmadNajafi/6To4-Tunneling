@@ -22,13 +22,13 @@ do
 clear
 echo "Simple Script!"
 echo ""
-echo -en "\e[42m1: Iran"
-echo -en "\e[42m2: Kharej"
-echo -en "\e[43m3: Install Sanaei x-ui"
-echo -en "\e[43m4: Install ShaHan SSH Panel"
-echo "0: \e[41mExit"
+echo -e "\e[42m1: Iran"
+echo -e "\e[42m2: Kharej"
+echo -e "\e[43m3: Install Sanaei x-ui"
+echo -e "\e[43m4: Install ShaHan SSH Panel"
+echo -e "0: \e[41mExit"
 echo ""
-read -p "\e[42mPlease enter a number: " number
+read -p -e "\e[42mPlease enter a number: " number
 case $number in
 	1) iran;;
 	2) kharej;;
