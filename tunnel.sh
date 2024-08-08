@@ -17,6 +17,8 @@ echo ""
 ##Update Server##
 apt-get update && apt-get upgrade -y
 
+clear
+
 ##Main Menu##
 menu () { while true 
 do
