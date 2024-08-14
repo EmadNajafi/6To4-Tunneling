@@ -20,7 +20,7 @@ port=$(echo "$po" | sed "s/Port //g")
 ipiran=$(curl -s ipv4.icanhazip.com)
 
 
-echo "\nIp Iran ro vared konid : "
+echo -e "\nIp Iran ro vared konid : "
 printf "Ip Server Iran Shoma : \e[33m${ipiran}\e[0m, Baraye Taeid Enter Bznid..."
 read irtmp
 if [[ -n "${irtmp}" ]]; then
