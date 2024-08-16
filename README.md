@@ -2,7 +2,7 @@
 
 # دستور زیر رو در سرور ایران و خارج اجرا کنید و بقیه مراحل رو طی کنید 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/tunnel.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/mainmenu.sh)
 ```
 تنها کاری که نیازه انجام بدید ای پی های دو سرور را وارد کنید و تانل به صورت خودکار ایجاد میشود 
 
