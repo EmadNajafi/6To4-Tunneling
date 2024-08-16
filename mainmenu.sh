@@ -38,7 +38,9 @@ done
 }
 
 ##Tunnel##
-
+tunnel() {
+	bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/tunnel.sh)
+}
 
 
 ##Install Sanaei x-ui Panel##
