@@ -81,8 +81,9 @@ kharej(){
     ipkharej=$(curl -s ipv4.icanhazip.com)
 
 
-echo -e "\nIp Kharej ro vared konid : "
+
 printf "Ip Server Kharej Shoma : \e[33m${ipkharej}\e[0m, Baraye Taeid Enter Bznid... "
+echo -e "\nIp Kharej ro vared konid : "
 read khtmp
 if [[ -n "${khtmp}" ]]; then
     ipkharej=${khtmp}
