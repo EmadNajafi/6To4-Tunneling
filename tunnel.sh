@@ -10,7 +10,7 @@ echo "1: 6To4/Gre6 Iran"
 echo "2: 6To4/Gre6 Kharej"
 echo "3: Start Tunnel With iptable"
 echo ""
-echo "0: Back To Main Menu.."
+echo "0: Back To Main Menu...!"
 echo ""
 read -p "Please enter a number: " number
 case $number in
@@ -124,5 +124,9 @@ iptable() {
     iptables -t nat -A POSTROUTING -j MASQUERADE
 }
 
+##Back To Mainmenu##
+back() {
+    bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/mainmenu.sh)
+}
 tunnelmenu
 
