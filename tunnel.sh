@@ -162,7 +162,9 @@ port() {
     clear
 }
 
-
+back () {
+    bash <(curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/mainmenu.sh)
+}
 
 tunnelmenu
 
