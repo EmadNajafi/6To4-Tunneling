@@ -1,13 +1,5 @@
 #!/bin/bash
 
-clear
-require_root
-check_deps
-print "Written By EmadNajafi" 0.04
-sleep 0.7
-main_menu
-
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -205,6 +197,7 @@ main_menu() {
 }
 
 # ========== Ejraye barname ==========
+clear
 require_root
 check_deps
 print "Written By EmadNajafi" 0.04
