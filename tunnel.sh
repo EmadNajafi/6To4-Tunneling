@@ -252,12 +252,12 @@ firewall_menu() {
     while true; do
         clear
         echo -e "${GREEN}======= Firewall (ufw) Menu =======${NC}"
-        echo "1) Baz kardan port"
-        echo "2) Baste kardan port"
-        echo "3) Namayesh vaziat ufw"
-        echo "4) Faal kardan ufw"
-        echo "5) Gheyr faal kardan ufw"
-        echo "0) Bargasht be menu asli"
+        echo "1) Open port"
+        echo "2) Close port"
+        echo "3) ufw status"
+        echo "4) Enable ufw"
+        echo "5) Disabel ufw"
+        echo "0) Back To Main Menu..."
         echo -e "${GREEN}==================================${NC}\n"
         read -rp "$(echo -e "${YELLOW}Shomare ra vared konid: ${NC}")" number
         case $number in
