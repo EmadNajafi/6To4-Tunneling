@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# رنگ‌ها
+# ========== Rang-ha baraye khoruji zibatar ==========
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# تابع چاپ کاراکتر به کاراکتر
+# ========== Abzar komaki ==========
 print() {
     local text="$1"
     local delay="${2:-0.03}"
@@ -17,68 +17,48 @@ print() {
     echo
 }
 
-# چک دسترسی روت
 require_root() {
     if [[ $EUID -ne 0 ]]; then
-        echo -e "${RED}This script must be run as root.${NC}"
+        echo -e "${RED}In script bayad ba dastresi root ejra beshe.${NC}"
         exit 1
     fi
 }
 
-# چک وابستگی‌های ضروری
 check_deps() {
     for cmd in curl ip iptables sed; do
-        command -v "$cmd" &>/dev/null || { echo -e "${RED}Dependency '$cmd' not found. Install it first.${NC}"; exit 1; }
+        command -v "$cmd" &>/dev/null || { echo -e "${RED}Vabastegi '$cmd' peyda nashod. Lotfan nasbesh kon.${NC}"; exit 1; }
     done
 }
 
-# Tunnel Menu
-tunnel_menu() {
-    while true; do
-        clear
-        echo -e "${GREEN}========== Tunnel Menu ==========${NC}"
-        echo "1) 6To4/Gre6 Iran"
-        echo "2) 6To4/Gre6 Kharej"
-        echo "3) NAT Forwarding"
-        echo "4) Port Forwarding"
-        echo "0) Back To Main Menu"
-        echo -e "${GREEN}=================================${NC}\n"
-        read -rp "$(echo -e "${YELLOW}Please enter a number: ${NC}")" number
-        echo
-        case $number in
-            1) iran ;;
-            2) kharej ;;
-            3) nat_forward ;;
-            4) port_forward ;;
-            0) back ;;
-            *) echo -e "${RED}Invalid choice. Please try again.${NC}"; sleep 1 ;;
-        esac
-    done
+cleanup() {
+    echo -e "\n${YELLOW}Khorooj az barname...${NC}"
+    exit 0
 }
+trap cleanup SIGINT SIGTERM
 
-# تابع ایران
+# ========== Tabe-ha-ye Tunnel ==========
 iran() {
     require_root
     check_deps
 
-    sudo sed -i 's/^#Port 22/Port 22/' /etc/ssh/sshd_config
+    sed -i 's/^#Port 22/Port 22/' /etc/ssh/sshd_config
     port=$(grep "^Port" /etc/ssh/sshd_config | sed "s/Port //g")
     ipiran=$(curl -s ipv4.icanhazip.com || echo "N/A")
 
-    echo -e "Detected Iran Server IP: ${YELLOW}${ipiran}${NC}"
-    read -rp "Enter Iran Server IP (leave empty to use detected): " irtmp
+    echo -e "IP Iran shenasaei shode: ${YELLOW}${ipiran}${NC}"
+    read -rp "Agar mikhay IP Iran ro taghir bedi benevis (ya Enter bezan): " irtmp
     [[ -n "$irtmp" ]] && ipiran="$irtmp"
 
-    read -rp "Enter Foreign Server IP: " ipkharej
-    [[ -z "$ipkharej" ]] && { echo -e "${RED}Foreign Server IP is required.${NC}"; return; }
+    read -rp "IP server kharej ro vared kon: " ipkharej
+    [[ -z "$ipkharej" ]] && { echo -e "${RED}IP kharej ejbari ast.${NC}"; sleep 1; return; }
 
-    # تنظیمات شبکه و تونل
-    cat <<EOF | sudo tee /etc/sysctl.d/60-custom.conf >/dev/null
+    # Tanzimat shabake va tunnel
+    cat <<EOF | tee /etc/sysctl.d/60-custom.conf >/dev/null
 net.ipv4.ip_forward = 1
 net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
 EOF
-    sudo sysctl -p /etc/sysctl.d/60-custom.conf
+    sysctl -p /etc/sysctl.d/60-custom.conf
 
     ip tunnel add 6to4_To_KH mode sit remote "$ipkharej" local "$ipiran"
     ip -6 addr add fc00::1/64 dev 6to4_To_KH
@@ -91,33 +71,32 @@ EOF
     ip link set GRE6Tun_To_KH up
 
     echo
-    print "Done!" 0.06
+    print "Tamoom shod!" 0.06
     sleep 1
 }
 
-# تابع خارج
 kharej() {
     require_root
     check_deps
 
-    sudo sed -i 's/^#Port 22/Port 22/' /etc/ssh/sshd_config
+    sed -i 's/^#Port 22/Port 22/' /etc/ssh/sshd_config
     port=$(grep "^Port" /etc/ssh/sshd_config | sed "s/Port //g")
     ipkharej=$(curl -s ipv4.icanhazip.com || echo "N/A")
 
-    echo -e "Detected Foreign Server IP: ${YELLOW}${ipkharej}${NC}"
-    read -rp "Enter Foreign Server IP (leave empty to use detected): " khtmp
+    echo -e "IP kharej shenasaei shode: ${YELLOW}${ipkharej}${NC}"
+    read -rp "Agar mikhay IP kharej ro taghir bedi benevis (ya Enter bezan): " khtmp
     [[ -n "$khtmp" ]] && ipkharej="$khtmp"
 
-    read -rp "Enter Iran Server IP: " ipiran
-    [[ -z "$ipiran" ]] && { echo -e "${RED}Iran Server IP is required.${NC}"; return; }
+    read -rp "IP server Iran ro vared kon: " ipiran
+    [[ -z "$ipiran" ]] && { echo -e "${RED}IP Iran ejbari ast.${NC}"; sleep 1; return; }
 
-    # تنظیمات شبکه و تونل
-    cat <<EOF | sudo tee /etc/sysctl.d/60-custom.conf >/dev/null
+    # Tanzimat shabake va tunnel
+    cat <<EOF | tee /etc/sysctl.d/60-custom.conf >/dev/null
 net.ipv4.ip_forward = 1
 net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
 EOF
-    sudo sysctl -p /etc/sysctl.d/60-custom.conf
+    sysctl -p /etc/sysctl.d/60-custom.conf
 
     ip tunnel add 6to4_To_IR mode sit remote "$ipiran" local "$ipkharej"
     ip -6 addr add fc00::2/64 dev 6to4_To_IR
@@ -130,11 +109,10 @@ EOF
     ip link set GRE6Tun_To_IR up
 
     echo
-    print "Done!" 0.06
+    print "Tamoom shod!" 0.06
     sleep 1
 }
 
-# NAT Forwarding (قبلی iptable)
 nat_forward() {
     require_root
     check_deps
@@ -145,11 +123,10 @@ nat_forward() {
     iptables -t nat -A POSTROUTING -j MASQUERADE
 
     echo
-    print "Done!" 0.06
+    print "Tamoom shod!" 0.06
     sleep 1
 }
 
-# Port Forwarding
 port_forward() {
     require_root
     check_deps
@@ -163,15 +140,67 @@ port_forward() {
     iptables -t nat -A POSTROUTING -j MASQUERADE
 
     echo
-    print "Done!" 0.06
+    print "Tamoom shod!" 0.06
     sleep 1
 }
 
-# برگشت به منوی اصلی
-back() {
-    curl -Ls https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/mainmenu.sh | bash
-    exit 0
+# ========== Menu Tunnel ==========
+tunnel_menu() {
+    while true; do
+        clear
+        echo -e "${GREEN}========== Tunnel Menu ==========${NC}"
+        echo "1) 6To4/Gre6 Iran"
+        echo "2) 6To4/Gre6 Kharej"
+        echo "3) NAT Forwarding"
+        echo "4) Port Forwarding"
+        echo "0) Bargasht be menu asli"
+        echo -e "${GREEN}=================================${NC}\n"
+        read -rp "$(echo -e "${YELLOW}Shomare ra vared konid: ${NC}")" number
+        echo
+        case $number in
+            1) iran ;;
+            2) kharej ;;
+            3) nat_forward ;;
+            4) port_forward ;;
+            0) return ;; # Bargasht be menu asli
+            *) echo -e "${RED}Entekhab namotabar! Dobare talash kon.${NC}"; sleep 1 ;;
+        esac
+    done
 }
 
-# اجرای منو
-tunnel_menu
+# ========== Nasb panel-ha ==========
+sanaei() {
+    bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
+}
+shahan() {
+    bash <(curl -Ls https://raw.githubusercontent.com/HamedAp/Ssh-User-management/master/install.sh)
+}
+
+# ========== Menu asli ==========
+main_menu() {
+    while true; do
+        clear
+        echo -e "${GREEN}========== Main Menu ==========${NC}"
+        echo "1) Tunnel"
+        echo "2) Nasb Sanaei x-ui"
+        echo "3) Nasb ShaHan SSH Panel"
+        echo "0) Khorooj"
+        echo -e "${GREEN}===============================${NC}\n"
+        read -rp "$(echo -e "${YELLOW}Shomare ra vared konid: ${NC}")" number
+        echo
+        case $number in
+            1) tunnel_menu ;;
+            2) sanaei ;;
+            3) shahan ;;
+            0) cleanup ;;
+            *) echo -e "${RED}Entekhab namotabar! Dobare talash kon.${NC}"; sleep 1 ;;
+        esac
+    done
+}
+
+# ========== Ejraye barname ==========
+require_root
+check_deps
+print "Written By EmadNajafi" 0.04
+sleep 0.7
+main_menu
