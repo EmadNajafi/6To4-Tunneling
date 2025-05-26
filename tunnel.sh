@@ -1,12 +1,19 @@
 #!/bin/bash
 
-# ========== Rang-ha baraye khoruji zibatar ==========
+clear
+require_root
+check_deps
+print "Written By EmadNajafi" 0.04
+sleep 0.7
+main_menu
+
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-# ========== Abzar komaki ==========
+
 print() {
     local text="$1"
     local delay="${2:-0.03}"
@@ -36,7 +43,6 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-# ========== Tabe-ha-ye Tunnel ==========
 iran() {
     require_root
     check_deps
@@ -52,7 +58,7 @@ iran() {
     read -rp "IP server kharej ro vared kon: " ipkharej
     [[ -z "$ipkharej" ]] && { echo -e "${RED}IP kharej ejbari ast.${NC}"; sleep 1; return; }
 
-    # Tanzimat shabake va tunnel
+    
     cat <<EOF | tee /etc/sysctl.d/60-custom.conf >/dev/null
 net.ipv4.ip_forward = 1
 net.core.default_qdisc = fq
