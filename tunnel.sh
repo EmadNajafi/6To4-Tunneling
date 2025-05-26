@@ -1,11 +1,28 @@
 #!/bin/bash
 
+# ====== Self-update block ======
+SCRIPT_URL="https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/script.sh"
+TMP_SCRIPT="/tmp/selfupdate-$$.sh"
+
+curl -fsSL "$SCRIPT_URL" -o "$TMP_SCRIPT"
+if [[ $? -eq 0 ]]; then
+    if ! cmp -s "$TMP_SCRIPT" "$0"; then
+        chmod +x "$TMP_SCRIPT"
+        echo "Script updated! Restarting new version..."
+        exec "$TMP_SCRIPT" "$@"
+        exit 0
+    fi
+fi
+rm -f "$TMP_SCRIPT"
+# ====== End of self-update ======
+
+# ========== Rang-ha baraye khoruji zibatar ==========
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-
+# ========== Abzar komaki ==========
 print() {
     local text="$1"
     local delay="${2:-0.03}"
@@ -35,6 +52,7 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
+# ========== Tabe-ha-ye Tunnel ==========
 iran() {
     require_root
     check_deps
@@ -50,7 +68,7 @@ iran() {
     read -rp "IP server kharej ro vared kon: " ipkharej
     [[ -z "$ipkharej" ]] && { echo -e "${RED}IP kharej ejbari ast.${NC}"; sleep 1; return; }
 
-    
+    # Tanzimat shabake va tunnel
     cat <<EOF | tee /etc/sysctl.d/60-custom.conf >/dev/null
 net.ipv4.ip_forward = 1
 net.core.default_qdisc = fq
@@ -142,6 +160,86 @@ port_forward() {
     sleep 1
 }
 
+# ========== Show Status ==========
+show_status() {
+    clear
+    echo -e "${GREEN}========== Namayesh Vaziat ==========${NC}"
+    
+    # SSH
+    if systemctl is-active --quiet ssh || systemctl is-active --quiet sshd; then
+        echo -e "SSH: ${GREEN}Active${NC}"
+    else
+        echo -e "SSH: ${RED}Inactive${NC}"
+    fi
+
+    # iptables
+    if command -v iptables &>/dev/null; then
+        echo -e "iptables: ${GREEN}Available${NC}"
+        if iptables -L -n &>/dev/null; then
+            echo -e "iptables Rules: ${GREEN}Loaded${NC}"
+        else
+            echo -e "iptables Rules: ${RED}NOT Loaded${NC}"
+        fi
+    else
+        echo -e "iptables: ${RED}Not Installed${NC}"
+    fi
+
+    # ip forwarding
+    ipf=$(sysctl -n net.ipv4.ip_forward)
+    if [[ $ipf -eq 1 ]]; then
+        echo -e "IP Forwarding: ${GREEN}Enabled${NC}"
+    else
+        echo -e "IP Forwarding: ${RED}Disabled${NC}"
+    fi
+
+    # Tunnels (6to4 & GRE)
+    if ip tunnel show | grep -q "6to4_To_KH"; then
+        echo -e "6to4_To_KH Tunnel: ${GREEN}Active${NC}"
+    else
+        echo -e "6to4_To_KH Tunnel: ${RED}Not Found${NC}"
+    fi
+
+    if ip -6 tunnel show | grep -q "GRE6Tun_To_KH"; then
+        echo -e "GRE6Tun_To_KH Tunnel: ${GREEN}Active${NC}"
+    else
+        echo -e "GRE6Tun_To_KH Tunnel: ${RED}Not Found${NC}"
+    fi
+
+    if ip tunnel show | grep -q "6to4_To_IR"; then
+        echo -e "6to4_To_IR Tunnel: ${GREEN}Active${NC}"
+    else
+        echo -e "6to4_To_IR Tunnel: ${RED}Not Found${NC}"
+    fi
+
+    if ip -6 tunnel show | grep -q "GRE6Tun_To_IR"; then
+        echo -e "GRE6Tun_To_IR Tunnel: ${GREEN}Active${NC}"
+    else
+        echo -e "GRE6Tun_To_IR Tunnel: ${RED}Not Found${NC}"
+    fi
+
+    # Ping (Az user migirim IP bede)
+    echo ""
+    read -rp "IP Iran baraye ping (khali bezari test nemishe): " ipiran
+    if [[ -n "$ipiran" ]]; then
+        if ping -c 1 -W 1 "$ipiran" &>/dev/null; then
+            echo -e "Ping be Iran: ${GREEN}OK${NC}"
+        else
+            echo -e "Ping be Iran: ${RED}FAILED${NC}"
+        fi
+    fi
+    read -rp "IP Kharej baraye ping (khali bezari test nemishe): " ipkharej
+    if [[ -n "$ipkharej" ]]; then
+        if ping -c 1 -W 1 "$ipkharej" &>/dev/null; then
+            echo -e "Ping be Kharej: ${GREEN}OK${NC}"
+        else
+            echo -e "Ping be Kharej: ${RED}FAILED${NC}"
+        fi
+    fi
+
+    echo ""
+    read -rp "Baraye bazgasht Enter bezan..." _
+}
+
 # ========== Menu Tunnel ==========
 tunnel_menu() {
     while true; do
@@ -182,6 +280,7 @@ main_menu() {
         echo "1) Tunnel"
         echo "2) Nasb Sanaei x-ui"
         echo "3) Nasb ShaHan SSH Panel"
+        echo "4) Namayesh Vaziat"
         echo "0) Khorooj"
         echo -e "${GREEN}===============================${NC}\n"
         read -rp "$(echo -e "${YELLOW}Shomare ra vared konid: ${NC}")" number
@@ -190,6 +289,7 @@ main_menu() {
             1) tunnel_menu ;;
             2) sanaei ;;
             3) shahan ;;
+            4) show_status ;;
             0) cleanup ;;
             *) echo -e "${RED}Entekhab namotabar! Dobare talash kon.${NC}"; sleep 1 ;;
         esac
