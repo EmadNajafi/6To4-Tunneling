@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ====== Self-update block ======
-SCRIPT_URL="https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/script.sh"
+SCRIPT_URL="https://raw.githubusercontent.com/EmadNajafi/6To4-Tunneling/main/tunnel.sh"
 TMP_SCRIPT="/tmp/selfupdate-$$.sh"
 
 curl -fsSL "$SCRIPT_URL" -o "$TMP_SCRIPT"
