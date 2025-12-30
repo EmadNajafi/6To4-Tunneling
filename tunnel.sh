@@ -21,6 +21,21 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+delete_link_if_exists() {
+    local iface="$1"
+    if ip link show "$iface" &>/dev/null; then
+        ip link delete "$iface"
+    fi
+}
+
+ensure_iptables_rule() {
+    local table="$1"
+    shift
+    if ! iptables -t "$table" -C "$@" 2>/dev/null; then
+        iptables -t "$table" -A "$@"
+    fi
+}
+
 require_root() {
     if [[ $EUID -ne 0 ]]; then
         echo -e "${RED}In script bayad ba dastresi root ejra beshe.${NC}"
@@ -74,6 +89,8 @@ net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
 EOF
     sysctl -p /etc/sysctl.d/60-custom.conf
+    delete_link_if_exists 6to4_To_KH
+    delete_link_if_exists GRE6Tun_To_KH
     ip tunnel add 6to4_To_KH mode sit remote "$ipkharej" local "$ipiran"
     ip -6 addr add fc00::1/64 dev 6to4_To_KH
     ip link set 6to4_To_KH mtu 1480
@@ -103,6 +120,8 @@ net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
 EOF
     sysctl -p /etc/sysctl.d/60-custom.conf
+    delete_link_if_exists 6to4_To_IR
+    delete_link_if_exists GRE6Tun_To_IR
     ip tunnel add 6to4_To_IR mode sit remote "$ipiran" local "$ipkharej"
     ip -6 addr add fc00::2/64 dev 6to4_To_IR
     ip link set 6to4_To_IR mtu 1480
@@ -120,9 +139,9 @@ nat_forward() {
     require_root
     check_deps
     sysctl net.ipv4.ip_forward=1
-    iptables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination 192.168.13.1
-    iptables -t nat -A PREROUTING -j DNAT --to-destination 192.168.13.2
-    iptables -t nat -A POSTROUTING -j MASQUERADE
+    ensure_iptables_rule nat PREROUTING -p tcp --dport 22 -j DNAT --to-destination 192.168.13.1
+    ensure_iptables_rule nat PREROUTING -j DNAT --to-destination 192.168.13.2
+    ensure_iptables_rule nat POSTROUTING -j MASQUERADE
     echo
     print "Tamoom shod!" 0.06
     sleep 1
@@ -132,12 +151,12 @@ port_forward() {
     require_root
     check_deps
     sysctl net.ipv4.ip_forward=1
-    iptables -A INPUT -i lo -j ACCEPT
-    iptables -A OUTPUT -o lo -j ACCEPT
-    iptables -t nat -A PREROUTING -p tcp --dport 22 -j DNAT --to-destination 192.168.13.1
-    iptables -t nat -A PREROUTING -p tcp --dport 1:65535 -j DNAT --to-destination 192.168.13.2
-    iptables -t nat -A PREROUTING -p udp --dport 1:65535 -j DNAT --to-destination 192.168.13.2
-    iptables -t nat -A POSTROUTING -j MASQUERADE
+    ensure_iptables_rule filter INPUT -i lo -j ACCEPT
+    ensure_iptables_rule filter OUTPUT -o lo -j ACCEPT
+    ensure_iptables_rule nat PREROUTING -p tcp --dport 22 -j DNAT --to-destination 192.168.13.1
+    ensure_iptables_rule nat PREROUTING -p tcp --dport 1:65535 -j DNAT --to-destination 192.168.13.2
+    ensure_iptables_rule nat PREROUTING -p udp --dport 1:65535 -j DNAT --to-destination 192.168.13.2
+    ensure_iptables_rule nat POSTROUTING -j MASQUERADE
     echo
     print "Tamoom shod!" 0.06
     sleep 1
